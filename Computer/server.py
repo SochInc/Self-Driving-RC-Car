@@ -1,10 +1,7 @@
-__author__ = 'zhengwang'
-
 import numpy as np
 import cv2
 import socket
 from getKeys import key_check
-
 
 class StreamingServer(object):
     def __init__(self):
@@ -14,6 +11,7 @@ class StreamingServer(object):
         self.server_socket.listen(0)
         self.conn, self.client_address = self.server_socket.accept()
         self.connection = self.conn.makefile('rb')
+
         # create labels
         self.k = np.zeros((4, 4), 'float')
         for i in range(4):
