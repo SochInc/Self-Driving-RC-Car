@@ -2,13 +2,17 @@ import numpy as np
 import cv2
 import socket
 from getKeys import key_check
+import requests
+import urllib3
+import json
 
 class StreamingServer(object):
     def __init__(self):
-
+        # self.restUrl = 'http://192.168.1.106:8080/control'
+        self.restUrl = 'http://192.168.1.106:5000/messages'
         self.server_socket = socket.socket()
-        self.server_socket.bind(('192.168.1.6', 8000))
-        self.server_socket.listen(0)
+        self.server_socket.bind(('192.168.1.102', 8000))
+        self.server_socket.listen(1)
         self.conn, self.client_address = self.server_socket.accept()
         self.connection = self.conn.makefile('rb')
 
@@ -29,7 +33,6 @@ class StreamingServer(object):
         image_array = np.zeros((1, 38400))
         label_array = np.zeros((1, 4), 'float')
 
-
         try:
             print("Connection from: ", self.client_address)
             print("Streaming...")
@@ -41,6 +44,7 @@ class StreamingServer(object):
                 stream_bytes += self.connection.read(1024)
                 first = stream_bytes.find(b'\xff\xd8')
                 last = stream_bytes.find(b'\xff\xd9')
+                self.conn.sendall(b'WA')
                 if first != -1 and last != -1:
                     jpg = stream_bytes[first:last + 2]
                     stream_bytes = stream_bytes[last + 2:]
@@ -67,43 +71,75 @@ class StreamingServer(object):
                         # Remember to check label_array later
                         label_array = np.vstack((label_array, self.k[0]))
                         saved_frame += 1
-                        self.conn.send(b'WA')
+
+                        # Send key to rest api
+                        payload = dict(data='WA')
+                        response = requests.post(self.restUrl, data=payload)
+                        print(response, payload, 'sent to server.')
 
                     elif 'W' in keys and 'D' in keys:
                         print("Forward Right")
                         image_array = np.vstack((image_array, temp_array))
                         label_array = np.vstack((label_array, self.k[1]))
                         saved_frame += 1
-                        self.conn.send(b'WD')
+
+                        # Send key to rest api
+                        payload = dict(data='WD')
+                        headers = { 'content-type': 'application/json' }
+                        response = requests.post(self.restUrl, data=json.dumps(payload), headers=headers )
+                        print(response, payload, 'sent to server.')
+                        
 
                     elif 'S' in keys and 'A' in keys:
                         print("Reverse Left")
-                        self.conn.send(b'SA')
+
+                        # Send key to rest api
+                        payload = dict(data='SA')
+                        response = requests.post(self.restUrl, data=payload)
+                        print(response, payload, 'sent to server.')
+                        
 
                     elif 'S' in keys and 'D' in keys:
                         print("Reverse Right")
-                        self.conn.send(b'SD')
+
+                        # Send key to rest api
+                        payload = dict(data='SD')
+                        response = requests.post(self.restUrl, data=payload)
+                        print(response, payload, 'sent to server.')
+                        
 
                     elif 'W' in keys:
                         print("Forward")
                         saved_frame += 1
                         image_array = np.vstack((image_array, temp_array))
                         label_array = np.vstack((label_array, self.k[2]))
-                        self.conn.send(b'W')
+
+                        # Send key to rest api
+                        payload = dict(data='W')
+                        response = requests.post(self.restUrl, data=payload)
+                        print(response, payload, 'sent to server.')
 
                     elif 'S' in keys:
                         print("Reverse")
                         saved_frame += 1
                         image_array = np.vstack((image_array, temp_array))
                         label_array = np.vstack((label_array, self.k[3]))
-                        self.conn.send(b'S')
+                        
+                        # Send key to rest api
+                        payload = dict(data='S')
+                        response = requests.post(self.restUrl, data=payload)
+                        print(response, payload, 'sent to server.')
 
                     elif 'D' in keys:
                         print("Right")
                         saved_frame += 1
                         image_array = np.vstack((image_array, temp_array))
                         label_array = np.vstack((label_array, self.k[1]))
-                        self.conn.send(b'D')
+                        
+                        # Send key to rest api
+                        payload = dict(data='D')
+                        response = requests.post(self.restUrl, data=payload)
+                        print(response, payload, 'sent to server.')
 
 
                     elif 'A' in keys:
@@ -111,12 +147,21 @@ class StreamingServer(object):
                         saved_frame += 1
                         image_array = np.vstack((image_array, temp_array))
                         label_array = np.vstack((label_array, self.k[0]))
-                        self.conn.send(b'A')
+                        
+                        # Send key to rest api
+                        payload = dict(data='A')
+                        response = requests.post(self.restUrl, data=payload)
+                        print(response, payload, 'sent to server.')
 
                     elif 'Q' in keys:
                         print('exit')
                         self.send_inst = False
-                        self.conn.send(b'Q')
+                        
+                        # Send key to rest api
+                        payload = dict(data='Q')
+                        response = requests.post(self.restUrl, data=payload)
+                        print(response, payload, 'sent to server.')
+
                         break
 
             # save training images and labels
