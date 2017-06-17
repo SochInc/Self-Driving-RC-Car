@@ -15,7 +15,7 @@ router.get('/', function(req, res) {
 
 router.post('/control', function(req, res) {
 	console.log('Received: ',req.body.data)
-        res.status(200).send('Received '+ req.body.data)
+    res.status(200).send('Received '+ req.body.data)
 })
 
 app.use('/', router)
