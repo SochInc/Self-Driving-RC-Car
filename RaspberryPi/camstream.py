@@ -16,6 +16,7 @@ try:
         start = time.time()
         stream = io.BytesIO()
 
+        # Capture Camera Frames and send to Computer
         for foo in camera.capture_continuous(stream, 'jpeg', use_video_port = True):
             connection.write(struct.pack('<L', stream.tell()))
             connection.flush()
@@ -25,10 +26,6 @@ try:
                 break
             stream.seek(0)
             stream.truncate()
-
-            # data = client_socket.recv(1024)
-            # print(" Client2 received data:", data)
-
     connection.write(struct.pack('<L', 0))
 finally:
         connection.close()
