@@ -49,16 +49,18 @@ class StreamingServer(object):
                     jpg = stream_bytes[first:last + 2]
                     stream_bytes = stream_bytes[last + 2:]
                     image = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
-
+                    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                    height, width = image.shape
                     # select lower half of the image
-                    roi = image[200:240, :]
-
+                    roi = image[int(height/2):height, :]
+                    # select lower half of the image
                     # cv2.imshow('image', roi)
-
+                    
                     # save streamed images
-                    cv2.imwrite('training_images/Imageframe{:>05}.jpg'.format(frame), image)
+                    cv2.imwrite('training_images/Imageframe{:>05}.jpg'.format(frame), roi)
                     # reshape the roi image into one row array
-                    temp_array = roi.reshape(1, 38400).astype(np.float32)
+                    # temp_array = roi.reshape(1, 38400).astype(np.float32)
+                    temp_array = roi.flatten().astype(np.float32)
                     frame += 1
                     total_frame += 1
 
