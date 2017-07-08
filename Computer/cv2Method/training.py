@@ -8,8 +8,8 @@ load_time_start = cv2.getTickCount()
 image_array = np.zeros((1,38400))
 label_array = np.zeros((1,4),'float')
 training_data = glob.glob('training_data_temp/*.npz')
-
 for single_npz in training_data:
+
     with np.load(single_npz) as data:
         print(data.files)
         train_temp = data['train']
@@ -57,30 +57,3 @@ print("Training Completed in: ", train_time)
 model.save('mlp_xml/mlp.xml')
 
 print("Ran for %d iterations" %num_iter)
-
-
-
-for single_npz in testing_data:
-    with np.load(single_npz) as data:
-        test_temp = data['train']
-        test_labels_temp = data['train_labels']
-        print(test_temp.shape)
-        print(test_labels_temp.shape)
-    image_array = np.vstack((image_array, test_temp))
-    label_array = np.vstack((label_array, test_labels_temp))
-
-test = image_array[1:, :]
-test_labels = label_array[1:, :]
-
-
-ret, resp = model.predict(test)
-prediction = resp.argmax(-1)
-print("Prediction: ", prediction)
-
-true_labels = test_labels.argmax(-1)
-print("True labels: ", true_labels)
-
-num_correct = np.sum(true_labels == prediction)
-print("Correct predictions: ", num_correct)
-test_rate = np.mean(true_labels == prediction)
-print("Test rate: %f" % (test_rate*100))
