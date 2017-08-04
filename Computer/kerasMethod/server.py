@@ -4,6 +4,8 @@ import socket
 from getKeys import key_check
 import requests
 import pygame
+import os
+import time
 
 class StreamingServer(object):
     def __init__(self):
@@ -159,9 +161,17 @@ class StreamingServer(object):
             train_labels = label_array[1:, :]
 
             # save training data as a numpy file
-            np.savez('training_data/test00001.npz', train=train, train_labels=train_labels)
+            file_name = str(int(time.time()))
+            directory = "training_data"
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            try:    
+                np.savez(directory + '/' + file_name + '.npz', train=train, train_labels=train_labels)
+            except IOError as e:
+                print(e)
 
             e2 = cv2.getTickCount()
+            
             # calculate streaming metrics
             time0 = (e2 - e1) / cv2.getTickFrequency()
             print('Streaming duration:', time0)
