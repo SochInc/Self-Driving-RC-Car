@@ -1,34 +1,26 @@
 import csv
 import glob
-import json
 import numpy as np
-import pandas as pd
 import time
 
 from keras.layers import Activation, Dense, Dropout, Flatten
-from keras.layers import Convolution1D, MaxPooling1D
 from keras.models import Sequential
 from keras.optimizers import SGD
 from sklearn.cross_validation import train_test_split
-from sklearn import preprocessing
-
-
-print('Loading training data...')
-time_load_start = time.time()         # Returns the number of ticks after a certain event.
-
 
 def unison_shuffled_copies(a, b):
     assert len(a) == len(b)
     p = np.random.permutation(len(a))
     return a[p], b[p]
 
-
-# Load training data, unpacking what's in the saved .npz files.
+time_load_start = time.time()
 image_array = np.zeros((1, 38400))
 label_array = np.zeros((1, 4), 'float')
-
 training_data = glob.glob('training_data/*.npz')
 print(image_array.shape)
+
+# Getting data from training files.
+print('Loading training data...')
 for single_npz in training_data:
     with np.load(single_npz) as data:
         print(data.files)
@@ -41,14 +33,10 @@ for single_npz in training_data:
     image_array = np.vstack((image_array, train_temp))
     label_array = np.vstack((label_array, train_labels_temp))
 
-
 X = image_array[1:, :]
 y = label_array[1:, :]
 print('Shape of feature array: ', X.shape)
 print('Shape of label array: ', y.shape)
-
-# # Normalize with l2 (not gonna use this...)
-# X = preprocessing.normalize(X, norm='l2')
 
 # Normalize from 0 to 1
 X = X / 255.
@@ -59,20 +47,19 @@ model = Sequential()
 
 time_load_end = time.time()
 time_load_total = time_load_end - time_load_start
-print('Total time taken to load image data:', time_load_total, 'seconds')
 
+print('Total time taken to load image data:', time_load_total, 'seconds')
 
 # Get start time of Training
 time_training_start = time.time()
 
 print('Training...')
 
+# Creating a Model for training
 # Dense(n) is a fully-connected layer with n hidden units in the first layer.
-# You must specify the expected input data shape (e.g. input_dim=20 for 20-dimensional input vector).
 model.add(Dense(30, input_dim=38400, kernel_initializer='uniform'))
 model.add(Dropout(0.2))
 model.add(Activation('relu'))
-
 
 model.add(Dense(4, kernel_initializer='uniform'))
 model.add(Activation('softmax'))
