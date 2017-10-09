@@ -11,11 +11,11 @@ UP = LEFT = DOWN = RIGHT = ACCELERATE = DECELERATE = False
 class StreamingServer(object):
     def __init__(self):
         # REST API url
-        self.restUrl = 'http://192.168.0.106:5000/messages'
+        self.restUrl = 'http://192.168.1.106:5000/messages'
 
         # Start Socket Server
         self.server_socket = socket.socket()
-        self.server_socket.bind(('192.168.0.104', 8000))
+        self.server_socket.bind(('192.168.1.101', 8000))
         self.server_socket.listen(1)
         self.conn, self.client_address = self.server_socket.accept()
         self.connection = self.conn.makefile('rb')
@@ -89,8 +89,10 @@ class StreamingServer(object):
                     
                     image = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
                     
-                    cvimage=cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+                    cvimage = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+                    # cv2.imshow("xxx", cvimage)
                     pygameimage = pygame.image.frombuffer(cvimage.tostring(),cvimage.shape[1::-1],"RGB")
+                    print(cvimage.shape[1::-1])
                     
                     frame, total_frame = frame+1, total_frame+1
 
@@ -107,49 +109,50 @@ class StreamingServer(object):
                         label_array.append(label)
                         saved_frame+=1
                         
-                            if up_key:
-                                print('up')
-                                command = 'w'
-                                label = 0
-                                cv2.imwrite('training_images/Imageframe{:>05}.jpg'.format(frame), cvimage)
-                                image_path.append(frame)
-                                label_array.append(label)
-                                saved_frame+=1
-                                
-                            if down:
-                                print('down')
-                                command = 's'
-                                label = 1
-                                cv2.imwrite('training_images/Imageframe{:>05}.jpg'.format(frame), cvimage)
-                                image_path.append(frame)
-                                label_array.append(label)
-                                saved_frame+=1
-                                
-                            if right:
-                                print('right')
-                                command = 'd'
-                                label =2
-                                cv2.imwrite('training_images/Imageframe{:>05}.jpg'.format(frame), cvimage)
-                                image_path.append(frame)
-                                label_array.append(label)
-                                saved_frame+=1
-                                
-                            if left:
-                                print('left')
-                                command = 'a'
-                                label = 3
-                                cv2.imwrite('training_images/Imageframe{:>05}.jpg'.format(frame), cvimage)
-                                image_path.append(frame)
-                                label_array.append(label)
-                                saved_frame+=1
+                        if up_key:
+                            print('up')
+                            command = 'w'
+                            label = 0
+                            cv2.imwrite('training_images/Imageframe{:>05}.jpg'.format(frame), cvimage)
+                            image_path.append(frame)
+                            label_array.append(label)
+                            saved_frame+=1
+                            
+                        if down:
+                            print('down')
+                            command = 's'
+                            label = 1
+                            cv2.imwrite('training_images/Imageframe{:>05}.jpg'.format(frame), cvimage)
+                            image_path.append(frame)
+                            label_array.append(label)
+                            saved_frame+=1
+                            
+                        if right:
+                            print('right')
+                            command = 'd'
+                            label =2
+                            cv2.imwrite('training_images/Imageframe{:>05}.jpg'.format(frame), cvimage)
+                            image_path.append(frame)
+                            label_array.append(label)
+                            saved_frame+=1
+                            
+                        if left:
+                            print('left')
+                            command = 'a'
+                            label = 3
+                            cv2.imwrite('training_images/Imageframe{:>05}.jpg'.format(frame), cvimage)
+                            image_path.append(frame)
+                            label_array.append(label)
+                            saved_frame+=1
                     
                     
                     self.sendData(command)
 
-                    pygameimage = pygame.transform.scale(pygameimage, (700,400))
-                    self.gameDisplay.fill((255,255,255))
-                    # self.gameDisplay.blit(pygameimage, (0,0))
+                    pygameimage = pygame.transform.scale(pygameimage, (800,600))
+                    self.gameDisplay.fill((0,0,0))
+                    self.gameDisplay.blit(pygameimage, (0, 0))
                     pygame.display.update()
+
             df = pd.DataFrame({"image_path":image_path,"labels":label_array})
             df.to_csv("dataset.csv",index = False)
             e2 = cv2.getTickCount()
@@ -158,7 +161,6 @@ class StreamingServer(object):
             time0 = (e2 - e1) / cv2.getTickFrequency()
             print('Streaming duration:', time0)
 
-            
             print('Total frame:', total_frame)
             print('Saved frame:', saved_frame)
             print('Dropped frame', total_frame - saved_frame)
