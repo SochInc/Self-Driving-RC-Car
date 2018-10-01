@@ -139,14 +139,14 @@ The RPi is driven by 6vpower supply.
 
 ## Block Diagram
 
-![SDRC Block Diagram]
 <img src="resources/self-driving-car-block.png" width="400" />
 <center>Block diagram of the SDRC system </center>
 
 ## Activity Diagram
 
-| ![Manual Mode](resources/manual-mode.png) Manual Mode | ![Auto Mode](resources/auto-mode.png) Self Driving Mode |
-| ----------------------------------------------------- | ------------------------------------------------------- |
+| ![Manual Mode](resources/manual-mode.png)  |  ![Auto Mode](resources/auto-mode.png) |
+|---|---|
+| Manual Mode  |  Self Driving Mode 
 
 
 ## Algorithm
