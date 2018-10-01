@@ -27,9 +27,6 @@ try:
             stream.seek(0)
             stream.truncate()
 
-            # data = client_socket.recv(1024)
-            # print(" Client2 received data:", data)
-
     connection.write(struct.pack('<L', 0))
 finally:
         connection.close()
