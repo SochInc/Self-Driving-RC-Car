@@ -2,7 +2,7 @@
 
 Self Driving RC Car based on Neural Network & Raspberry Pi
 
-![Car](resources/car.jpg)
+<img src="resources/car.jpg" width="400" />
 
 ## Table of Contents
 
@@ -31,15 +31,13 @@ Self Driving RC Car based on Neural Network & Raspberry Pi
 
 This project implements autonomous driving feature to a remote-controlled car for improved safety concern. The main purpose of this project is to demonstrate the usability of artificial intelligence in the field of transportation and to demonstrate the concept of machine learning and neural networking. With the completion of this project we have properly demonstrated the usability of this technology in the near future and also demonstrate how this capitalizes on the user safety.
 
-The study proposed development of an autonomous vehicle, meaning it doesn’t require a driver to drive to the required destination. It makes the optimal use of the digital map and is trained with the help of plenty of data. After the selection of the destination by the user, the vehicle is able to select the shortest route to the destination or drive by any route requested by the user. This eliminates the need of a chauffeur for those who doesn’t know how to drive and alongside establishes the factor of security as the vehicle is able to detect any obstacles in its way thus able to avoid any incoming threat to the passenger with the help of various sensors built onto it.
-
 ## Development Approach
 
-The development of our project has been conducted in two phases hardware and software. Utilizing the limited resources, we were supplied with, we managed to assemble the minimal hardware components needed to make our project run.
+The development of our project has been conducted in two phases: hardware and software.
 
 #### Hardware Development
 
-The primary component needed in our Self-Driving Car is the Raspberry Pi 3. It controls the motors driving the car itself and with its powerful processor analyzes the image stream supplied by the Pi Camera and then decides on how the car should operate on the required conditions.
+Raspberry Pi 3 controls the motors driving the car itself and with its powerful processor, analyzes the image stream supplied by the Pi Camera and then decides on how the car should operate on the required conditions.
 The Raspberry Pi is connected with a custom-built relay module though which it drives the motors of the car. It is powered with the help of portable power bank which is attached to the car itself. The Raspberry Pi in turn provides the necessary logic to control the motor from its GPIO pins.
 
 #### Software Development and Functioning
@@ -101,10 +99,11 @@ The RPi is driven by 6vpower supply.
 #### Software:
 
 - Rasbian OS
-- Node JS
+- Flask Library
 - Python
 - Tensorflow library
 - Keras library
+- vim text editor
 
 ## Usage
 
@@ -140,8 +139,8 @@ The RPi is driven by 6vpower supply.
 
 ## Block Diagram
 
-![SDRC Block Diagram](resources/self-driving-car-block.png)
-
+![SDRC Block Diagram]
+<img src="resources/self-driving-car-block.png" width="400" />
 <center>Block diagram of the SDRC system </center>
 
 ## Activity Diagram
